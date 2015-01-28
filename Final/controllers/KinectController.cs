@@ -22,7 +22,7 @@ namespace Final.controllers
       }
     }
 
-    KinectSensor kinect;
+    public KinectSensor kinect;
     GameController gameController;
     Image rgbImage;
     Button stopButton;

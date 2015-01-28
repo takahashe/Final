@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Animation;
+using Microsoft.Kinect;
 
 namespace Final.controllers
 {
@@ -15,6 +16,7 @@ namespace Final.controllers
     Grid initialWindow;
     Button startButton;
     Button stopButton;
+    KinectSensor kinect;
     KinectController kinectController;
     bool playable = false;
 
@@ -31,6 +33,7 @@ namespace Final.controllers
       this.initialWindow = initialWindow;
       this.startButton = startButton;
       this.stopButton = stopButton;
+      this.kinect = kinectController.kinect;
       this.kinectController = kinectController;
       startButton.Click += HandleStartButtonClick;
     }
@@ -41,6 +44,7 @@ namespace Final.controllers
       this.initialWindow = null;
       this.startButton = null;
       this.stopButton = null;
+      this.kinect = null;
       this.kinectController = null;
     }
     
@@ -87,12 +91,16 @@ namespace Final.controllers
 
     double CalcMarginTopOfStopButton()
     {
-      return random.NextDouble() * 300;
+      var freePixelsHeight
+        = kinect.ColorStream.FrameHeight - stopButton.ActualHeight;
+      return random.NextDouble() * freePixelsHeight;
     }
 
     double CalcMarginLeftOfStopButton()
     {
-      return random.NextDouble() * 500;
+      var freePixelsWidth
+        = kinect.ColorStream.FrameWidth - stopButton.ActualWidth;
+      return random.NextDouble() * freePixelsWidth;
     }
   }
 }

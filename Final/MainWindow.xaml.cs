@@ -28,6 +28,7 @@ namespace Final
       InitializeComponent();
 
       KinectController.EnsureKinectConnection();
+
       kinectController = new KinectController();
       gameController = new GameController();
 

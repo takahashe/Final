@@ -21,7 +21,7 @@ namespace Final
   public partial class MainWindow : Window
   {
     KinectController kinectController;
-    GameController gameController;
+    AlarmController alarmController;
 
     public MainWindow()
     {
@@ -30,18 +30,22 @@ namespace Final
       KinectController.EnsureKinectConnection();
 
       kinectController = new KinectController();
-      gameController = new GameController();
+      alarmController = new AlarmController();
 
       kinectController.Setup(
         rgbImage: rgbImage,
         stopButton: stopButton,
         skeletonCanvas: skeletonCanvas,
-        gameController: gameController
+        alarmController: alarmController
       );
 
-      gameController.Setup(
+      alarmController.Setup(
         initialWindow: initialWindow,
-        startButton: startButton,
+        inputGrid: inputGrid,
+        hourInput: hourInput,
+        minuteInput: minuteInput,
+        setButton: setButton,
+        unsetButton: unsetButton,
         stopButton: stopButton,
         kinectController: kinectController
       );
@@ -49,10 +53,10 @@ namespace Final
 
     public void Close(object sender, CancelEventArgs e)
     {
-      kinectController.Stop();
-      gameController.Stop();
+      kinectController.Dispose();
+      alarmController.Dispose();
       kinectController = null;
-      gameController = null;
+      alarmController = null;
       rgbImage.Source = null;
       skeletonCanvas.Children.Clear();
     }

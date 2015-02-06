@@ -23,7 +23,7 @@ namespace Final.controllers
     }
 
     public KinectSensor kinect;
-    GameController gameController;
+    AlarmController alarmController;
     Image rgbImage;
     Button stopButton;
     Canvas skeletonCanvas;
@@ -33,12 +33,12 @@ namespace Final.controllers
     public void Setup(Image rgbImage,
                       Button stopButton,
                       Canvas skeletonCanvas,
-                      GameController gameController)
+                      AlarmController alarmController)
     {
       this.rgbImage = rgbImage;
       this.stopButton = stopButton;
       this.skeletonCanvas = skeletonCanvas;
-      this.gameController = gameController;
+      this.alarmController = alarmController;
       this.kinect = KinectSensor.KinectSensors.First();
 
       kinect.ColorStream.Enable();
@@ -48,7 +48,7 @@ namespace Final.controllers
       kinect.Start();
     }
 
-    public void Stop()
+    public void Dispose()
     {
       if (!kinect.IsRunning) return;
 
@@ -57,7 +57,7 @@ namespace Final.controllers
       kinect.Stop();
       kinect.Dispose();
       kinect = null;
-      gameController = null;
+      alarmController = null;
       rgbImage = null;
       skeletonCanvas = null;
       userSkeletonDic = null;
@@ -137,32 +137,17 @@ namespace Final.controllers
         userSkeletonDic[skeleton.TrackingId] = userSkeleton;
       }
 
-      if (!gameController.IsPlayable()) return;
+      if (!alarmController.IsPlayable()) return;
 
-      var leftHandPoint = userSkeleton.LeftHandPoint();
-      if (stopButton.Margin.Left <= leftHandPoint.X
-          && leftHandPoint.X <= stopButton.Margin.Left + stopButton.ActualWidth
-          && stopButton.Margin.Top <= leftHandPoint.Y
-          && leftHandPoint.Y <= stopButton.Margin.Top + stopButton.ActualHeight)
+      if (userSkeleton.IsHoveringOver(stopButton))
       {
-        gameController.Refresh();
-        return;
-      }
-
-      var rightHandPoint = userSkeleton.RightHandPoint();
-      if (stopButton.Margin.Left <= rightHandPoint.X
-          && rightHandPoint.X <= stopButton.Margin.Left + stopButton.ActualWidth
-          && stopButton.Margin.Top <= rightHandPoint.Y
-          && rightHandPoint.Y <= stopButton.Margin.Top + stopButton.ActualHeight)
-      {
-        gameController.Refresh();
+        alarmController.Refresh();
       }
     }
 
     void RemoveUserSkeletonAt(int key)
     {
-      var userSkeleton = userSkeletonDic[key];
-      userSkeleton.Destroy();
+      userSkeletonDic[key].Destroy();
       userSkeletonDic.Remove(key);
     }
   }

@@ -51,8 +51,29 @@ namespace Final.models
       rightHand = skeleton.Joints[JointType.HandRight];
       // draw(skeleton);
     }
+    
+    public bool IsHoveringOver(Button stopButton)
+    {
+      var leftHandPoint = LeftHandPoint();
+      if (stopButton.Margin.Left <= leftHandPoint.X
+          && leftHandPoint.X <= stopButton.Margin.Left + stopButton.ActualWidth
+          && stopButton.Margin.Top <= leftHandPoint.Y
+          && leftHandPoint.Y <= stopButton.Margin.Top + stopButton.ActualHeight)
+      {
+        return true;
+      }
+      var rightHandPoint = RightHandPoint();
+      if (stopButton.Margin.Left <= rightHandPoint.X
+          && rightHandPoint.X <= stopButton.Margin.Left + stopButton.ActualWidth
+          && stopButton.Margin.Top <= rightHandPoint.Y
+          && rightHandPoint.Y <= stopButton.Margin.Top + stopButton.ActualHeight)
+      {
+        return true;
+      }
+      return false;
+    }
 
-    public ColorImagePoint LeftHandPoint()
+    ColorImagePoint LeftHandPoint()
     {
       SkeletonPoint point = leftHand.Position;
       return kinect.CoordinateMapper.MapSkeletonPointToColorPoint(
@@ -61,7 +82,7 @@ namespace Final.models
       );
     }
 
-    public ColorImagePoint RightHandPoint()
+    ColorImagePoint RightHandPoint()
     {
       SkeletonPoint point = rightHand.Position;
       return kinect.CoordinateMapper.MapSkeletonPointToColorPoint(
@@ -73,7 +94,7 @@ namespace Final.models
     void Draw(Skeleton skeleton)
     {
       grid.Children.Clear();
-      skeleton.Joints.ToList().ForEach(joint => Draw(joint));
+      skeleton.Joints.ToList().ForEach(Draw);
     }
 
     void Draw(Joint joint)
